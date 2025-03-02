@@ -24,6 +24,7 @@ void handleGameWon();
 void handleGameOver();
 void guessSequence(int value);
 void clearSimonSequence();
+void generateRandomSequence();
 
 void setup() {
   // put your setup code here, to run once:
@@ -35,7 +36,8 @@ void loop() {
   // put your main code here, to run repeatedly:
   buttonLedMap();
   if(!isGuessing && !isGameOver) {
-    pushSimonLed();
+    // pushSimonLed();
+    generateRandomSequence();
   }
 }
 
@@ -89,12 +91,30 @@ void blinkLedSequence() {
       break;
     }
     digitalWrite(simonLeds[i], HIGH);
-    delay(1000);
+    delay(300);
     digitalWrite(simonLeds[i], LOW);
-    delay(500);
+    delay(300);
   }
   isGuessing = true;
   isMountingSequence = false;
+}
+
+void generateRandomSequence() {
+  isMountingSequence = true;
+  int arrLength = sizeof(simonLeds)/sizeof(simonLeds[0]);
+  if(ledPos >= arrLength) {
+    handleGameWon();
+    isGameOver = true;
+    isGuessing = false;
+    return;
+  }
+  for(int i = 0; i <= ledPos; i++) {
+    int randomNumber = random(2, 5);
+    Serial.println(randomNumber);
+    simonLeds[i] = randomNumber;
+  }
+  ledPos += 1;
+  blinkLedSequence();
 }
 
 void initialConfig() {
