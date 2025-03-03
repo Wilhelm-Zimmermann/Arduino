@@ -8,6 +8,13 @@ const int PUSH_BTN_01 = 12;
 const int PUSH_BTN_02 = 11;
 const int PUSH_BTN_03 = 10;
 
+// BUZZER SOUND
+const int TONE_GREEN = 415;
+const int TONE_RED = 310;
+// tenho que comprar um led azul pra deixar o jogo mais interessante
+const int TONE_BLUE = 209;
+const int TONE_YELLOW = 252;
+
 // LOGIC VARS
 const int BUZZER = 9;
 bool isGameOver = true;
@@ -15,16 +22,17 @@ bool isGuessing = false;
 bool isMountingSequence = true;
 int ledPos = 0;
 int guessPos = 0;
-int simonLeds[5];
+int simonLeds[10];
 void buttonLedMap();
 void initialConfig();
 void pushSimonLed();
 void blinkLedSequence();
 void handleGameWon();
 void handleGameOver();
-void guessSequence(int value);
 void clearSimonSequence();
 void generateRandomSequence();
+void guessSequence(int value);
+void buzzerToneSound(int value);
 
 void setup() {
   // put your setup code here, to run once:
@@ -57,6 +65,9 @@ void buttonLedMap() {
     : button3 == HIGH ? 4
     : 0;
 
+  if(anyButtonHasPressed) {
+    buzzerToneSound(sequenceValue);
+  }
   if(isGuessing && !isGameOver && !isMountingSequence && anyButtonHasPressed) {
     guessSequence(sequenceValue);
   }
@@ -90,6 +101,7 @@ void blinkLedSequence() {
     if(simonLeds[i] == 0) {
       break;
     }
+    buzzerToneSound(simonLeds[i]);
     digitalWrite(simonLeds[i], HIGH);
     delay(300);
     digitalWrite(simonLeds[i], LOW);
@@ -143,6 +155,12 @@ void guessSequence(int value){
     delay(100);
   }
   delay(500);
+}
+
+void buzzerToneSound(int value) {
+  if(value == 2) tone(BUZZER, TONE_RED, 500);
+  if(value == 3) tone(BUZZER, TONE_GREEN, 500);
+  if(value == 4) tone(BUZZER, TONE_YELLOW, 500);
 }
 
 void handleGameOver() {
